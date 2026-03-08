@@ -1,292 +1,193 @@
-# Chatbot UI
+# GesaAI
 
-The open-source AI chat app for everyone.
+Aplikasi AI chat open-source yang mendukung berbagai provider seperti Groq, OpenAI, Anthropic, Google, Mistral, dan lainnya.
 
-<img src="./public/readme/screenshot.png" alt="Chatbot UI" width="600">
+<img src="./public/readme/screenshot.png" alt="GesaAI" width="600">
 
-## Demo
+## Fitur Utama
 
-View the latest demo [here](https://x.com/mckaywrigley/status/1738273242283151777?s=20).
+- 🤖 Dukungan multi-provider: Groq, OpenAI, Anthropic, Google Gemini, Mistral, Perplexity, OpenRouter, Azure OpenAI, Ollama
+- 🔑 API key bisa diset per-user atau via environment variable
+- 💾 Penyimpanan percakapan menggunakan Supabase (PostgreSQL)
+- 🌐 Antarmuka berbahasa internasional (i18n)
+- 📱 PWA-ready
 
-## Updates
+---
 
-Hey everyone! I've heard your feedback and am working hard on a big update.
+## Tutorial Cara Run (Lokal)
 
-Things like simpler deployment, better backend compatibility, and improved mobile layouts are on their way.
+### Prasyarat
 
-Be back soon.
+Pastikan kamu sudah menginstall:
+- [Node.js v18+](https://nodejs.org/)
+- [Docker Desktop](https://docs.docker.com/get-docker/) (untuk Supabase lokal)
+- [Supabase CLI](https://supabase.com/docs/guides/cli)
+- npm (sudah termasuk bersama Node.js)
 
--- Mckay
-
-## Official Hosted Version
-
-Use Chatbot UI without having to host it yourself!
-
-Find the official hosted version of Chatbot UI [here](https://chatbotui.com).
-
-## Sponsor
-
-If you find Chatbot UI useful, please consider [sponsoring](https://github.com/sponsors/mckaywrigley) me to support my open-source work :)
-
-## Issues
-
-We restrict "Issues" to actual issues related to the codebase.
-
-We're getting excessive amounts of issues that amount to things like feature requests, cloud provider issues, etc.
-
-If you are having issues with things like setup, please refer to the "Help" section in the "Discussions" tab above.
-
-Issues unrelated to the codebase will likely be closed immediately.
-
-## Discussions
-
-We highly encourage you to participate in the "Discussions" tab above!
-
-Discussions are a great place to ask questions, share ideas, and get help.
-
-Odds are if you have a question, someone else has the same question.
-
-## Legacy Code
-
-Chatbot UI was recently updated to its 2.0 version.
-
-The code for 1.0 can be found on the `legacy` branch.
-
-## Updating
-
-In your terminal at the root of your local Chatbot UI repository, run:
+### 1. Clone Repository
 
 ```bash
-npm run update
-```
-
-If you run a hosted instance you'll also need to run:
-
-```bash
-npm run db-push
-```
-
-to apply the latest migrations to your live database.
-
-## Local Quickstart
-
-Follow these steps to get your own Chatbot UI instance running locally.
-
-You can watch the full video tutorial [here](https://www.youtube.com/watch?v=9Qq3-7-HNgw).
-
-### 1. Clone the Repo
-
-```bash
-git clone https://github.com/mckaywrigley/chatbot-ui.git
+git clone https://github.com/gopaltrebung/GesaAIV2.git
+cd GesaAIV2
 ```
 
 ### 2. Install Dependencies
-
-Open a terminal in the root directory of your local Chatbot UI repository and run:
 
 ```bash
 npm install
 ```
 
-### 3. Install Supabase & Run Locally
+### 3. Jalankan Supabase Lokal
 
-#### Why Supabase?
-
-Previously, we used local browser storage to store data. However, this was not a good solution for a few reasons:
-
-- Security issues
-- Limited storage
-- Limits multi-modal use cases
-
-We now use Supabase because it's easy to use, it's open-source, it's Postgres, and it has a free tier for hosted instances.
-
-We will support other providers in the future to give you more options.
-
-#### 1. Install Docker
-
-You will need to install Docker to run Supabase locally. You can download it [here](https://docs.docker.com/get-docker) for free.
-
-#### 2. Install Supabase CLI
-
-**MacOS/Linux**
-
-```bash
-brew install supabase/tap/supabase
-```
-
-**Windows**
-
-```bash
-scoop bucket add supabase https://github.com/supabase/scoop-bucket.git
-scoop install supabase
-```
-
-#### 3. Start Supabase
-
-In your terminal at the root of your local Chatbot UI repository, run:
+Pastikan Docker Desktop sudah berjalan, lalu:
 
 ```bash
 supabase start
 ```
 
-### 4. Fill in Secrets
+Setelah berhasil, akan muncul output seperti berikut:
 
-#### 1. Environment Variables
+```
+API URL: http://localhost:54321
+DB URL: postgresql://postgres:postgres@localhost:54322/postgres
+Studio URL: http://localhost:54323
+anon key: eyJ...
+service_role key: eyJ...
+```
 
-In your terminal at the root of your local Chatbot UI repository, run:
+Catat nilai `API URL`, `anon key`, dan `service_role key` — kamu akan membutuhkannya di langkah berikutnya.
+
+### 4. Setup Environment Variables
+
+Salin file contoh `.env.local`:
 
 ```bash
 cp .env.local.example .env.local
 ```
 
-Get the required values by running:
+Buka `.env.local` dan isi nilai berikut (dari output `supabase start` di atas):
 
-```bash
-supabase status
+```env
+# Wajib diisi
+NEXT_PUBLIC_SUPABASE_URL=http://localhost:54321
+NEXT_PUBLIC_SUPABASE_ANON_KEY=<anon key dari supabase start>
+SUPABASE_SERVICE_ROLE_KEY=<service_role key dari supabase start>
+
+# API Key provider (opsional — isi salah satu atau lebih)
+GROQ_API_KEY=             # Dapatkan di https://console.groq.com
+OPENAI_API_KEY=           # Dapatkan di https://platform.openai.com
+ANTHROPIC_API_KEY=
+GOOGLE_GEMINI_API_KEY=
+MISTRAL_API_KEY=
+PERPLEXITY_API_KEY=
+OPENROUTER_API_KEY=
+
+# Ollama (opsional, untuk model lokal)
+NEXT_PUBLIC_OLLAMA_URL=http://localhost:11434
 ```
 
-Note: Use `API URL` from `supabase status` for `NEXT_PUBLIC_SUPABASE_URL`
+> **Catatan:** Jika environment variable API key diset, input di halaman settings pengguna akan dinonaktifkan dan semua pengguna akan menggunakan key tersebut.
 
-Now go to your `.env.local` file and fill in the values.
+### 5. Setup SQL (Sekali Saja)
 
-If the environment variable is set, it will disable the input in the user settings.
+Buka file migrasi pertama: `supabase/migrations/20240108234540_setup.sql`
 
-#### 2. SQL Setup
+Di sekitar baris 53–54, ganti nilai berikut:
+- `project_url`: Ganti dengan `http://localhost:54321` (atau biarkan default jika `project_id` di `config.toml` tidak diubah)
+- `service_role_key`: Ganti dengan nilai `service_role key` dari output `supabase start`
 
-In the 1st migration file `supabase/migrations/20240108234540_setup.sql` you will need to replace 2 values with the values you got above:
+Ini diperlukan agar penghapusan file storage berfungsi dengan benar.
 
-- `project_url` (line 53): `http://supabase_kong_chatbotui:8000` (default) can remain unchanged if you don't change your `project_id` in the `config.toml` file
-- `service_role_key` (line 54): You got this value from running `supabase status`
+### 6. (Opsional) Setup Groq API Key
 
-This prevents issues with storage files not being deleted properly.
+[Groq](https://groq.com) menyediakan inference LLaMA3, Mixtral, dan Gemma yang sangat cepat secara gratis.
 
-### 5. Install Ollama (optional for local models)
+1. Buat akun di [https://console.groq.com](https://console.groq.com)
+2. Buat API key baru
+3. Tambahkan ke `.env.local`:
+   ```env
+   GROQ_API_KEY=gsk_...
+   ```
 
-Follow the instructions [here](https://github.com/jmorganca/ollama#macos).
+Model Groq yang tersedia:
+- `llama3-8b-8192` — LLaMA3 8B (cepat, ringan)
+- `llama3-70b-8192` — LLaMA3 70B (lebih powerful)
+- `mixtral-8x7b-32768` — Mixtral 8x7B (context window besar: 32k)
+- `gemma-7b-it` — Gemma 7B
 
-### 6. Run app locally
-
-In your terminal at the root of your local Chatbot UI repository, run:
+### 7. Jalankan Aplikasi
 
 ```bash
 npm run chat
 ```
 
-Your local instance of Chatbot UI should now be running at [http://localhost:3000](http://localhost:3000). Be sure to use a compatible node version (i.e. v18).
+Perintah ini akan otomatis:
+1. Menjalankan Supabase (jika belum berjalan)
+2. Menggenerate TypeScript types dari database
+3. Menjalankan server Next.js di mode development
 
-You can view your backend GUI at [http://localhost:54323/project/default/editor](http://localhost:54323/project/default/editor).
+Setelah berhasil, buka browser dan akses:
+- **Aplikasi:** [http://localhost:3000](http://localhost:3000)
+- **Supabase Studio (backend):** [http://localhost:54323](http://localhost:54323)
 
-## Hosted Quickstart
+---
 
-Follow these steps to get your own Chatbot UI instance running in the cloud.
+## Update Aplikasi
 
-Video tutorial coming soon.
+Untuk mengupdate ke versi terbaru:
 
-### 1. Follow Local Quickstart
+```bash
+npm run update
+```
 
-Repeat steps 1-4 in "Local Quickstart" above.
+Jika kamu menggunakan instance hosted, jalankan juga:
 
-You will want separate repositories for your local and hosted instances.
+```bash
+npm run db-push
+```
 
-Create a new repository for your hosted instance of Chatbot UI on GitHub and push your code to it.
+---
 
-### 2. Setup Backend with Supabase
+## Hosted Quickstart (Deploy ke Cloud)
 
-#### 1. Create a new project
+### 1. Setup Backend dengan Supabase
 
-Go to [Supabase](https://supabase.com/) and create a new project.
+1. Buat project baru di [supabase.com](https://supabase.com/)
+2. Di dashboard project, pergi ke **Project Settings → API**
+3. Catat nilai:
+   - `Project URL` → `NEXT_PUBLIC_SUPABASE_URL`
+   - `anon public` key → `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+   - `service_role` key → `SUPABASE_SERVICE_ROLE_KEY`
+4. Di **Authentication → Providers**, pastikan "Email" diaktifkan
 
-#### 2. Get Project Values
-
-Once you are in the project dashboard, click on the "Project Settings" icon tab on the far bottom left.
-
-Here you will get the values for the following environment variables:
-
-- `Project Ref`: Found in "General settings" as "Reference ID"
-
-- `Project ID`: Found in the URL of your project dashboard (Ex: https://supabase.com/dashboard/project/<YOUR_PROJECT_ID>/settings/general)
-
-While still in "Settings" click on the "API" text tab on the left.
-
-Here you will get the values for the following environment variables:
-
-- `Project URL`: Found in "API Settings" as "Project URL"
-
-- `Anon key`: Found in "Project API keys" as "anon public"
-
-- `Service role key`: Found in "Project API keys" as "service_role" (Reminder: Treat this like a password!)
-
-#### 3. Configure Auth
-
-Next, click on the "Authentication" icon tab on the far left.
-
-In the text tabs, click on "Providers" and make sure "Email" is enabled.
-
-We recommend turning off "Confirm email" for your own personal instance.
-
-#### 4. Connect to Hosted DB
-
-Open up your repository for your hosted instance of Chatbot UI.
-
-In the 1st migration file `supabase/migrations/20240108234540_setup.sql` you will need to replace 2 values with the values you got above:
-
-- `project_url` (line 53): Use the `Project URL` value from above
-- `service_role_key` (line 54): Use the `Service role key` value from above
-
-Now, open a terminal in the root directory of your local Chatbot UI repository. We will execute a few commands here.
-
-Login to Supabase by running:
+### 2. Push Database
 
 ```bash
 supabase login
-```
-
-Next, link your project by running the following command with the "Project ID" you got above:
-
-```bash
 supabase link --project-ref <project-id>
-```
-
-Your project should now be linked.
-
-Finally, push your database to Supabase by running:
-
-```bash
 supabase db push
 ```
 
-Your hosted database should now be set up!
+### 3. Deploy Frontend ke Vercel
 
-### 3. Setup Frontend with Vercel
+1. Buka [vercel.com](https://vercel.com/) dan buat project baru
+2. Import repository ini dari GitHub
+3. Set Framework Preset ke **Next.js**
+4. Tambahkan environment variables berikut:
+   - `NEXT_PUBLIC_SUPABASE_URL`
+   - `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+   - `SUPABASE_SERVICE_ROLE_KEY`
+   - `GROQ_API_KEY` *(opsional)*
+   - API key provider lain yang ingin digunakan
 
-Go to [Vercel](https://vercel.com/) and create a new project.
+Untuk daftar lengkap environment variables, lihat file `.env.local.example`.
 
-In the setup page, import your GitHub repository for your hosted instance of Chatbot UI. Within the project Settings, in the "Build & Development Settings" section, switch Framework Preset to "Next.js".
+---
 
-In environment variables, add the following from the values you got above:
+## Kontribusi
 
-- `NEXT_PUBLIC_SUPABASE_URL`
-- `NEXT_PUBLIC_SUPABASE_ANON_KEY`
-- `SUPABASE_SERVICE_ROLE_KEY`
-- `NEXT_PUBLIC_OLLAMA_URL` (only needed when using local Ollama models; default: `http://localhost:11434`)
+Pull request dan issue sangat disambut! Silakan fork repository ini dan buat PR.
 
-You can also add API keys as environment variables.
+## Repository
 
-- `OPENAI_API_KEY`
-- `AZURE_OPENAI_API_KEY`
-- `AZURE_OPENAI_ENDPOINT`
-- `AZURE_GPT_45_VISION_NAME`
-
-For the full list of environment variables, refer to the '.env.local.example' file. If the environment variables are set for API keys, it will disable the input in the user settings.
-
-Click "Deploy" and wait for your frontend to deploy.
-
-Once deployed, you should be able to use your hosted instance of Chatbot UI via the URL Vercel gives you.
-
-## Contributing
-
-We are working on a guide for contributing.
-
-## Contact
-
-Message Mckay on [Twitter/X](https://twitter.com/mckaywrigley)
+[https://github.com/gopaltrebung/GesaAIV2](https://github.com/gopaltrebung/GesaAIV2)
